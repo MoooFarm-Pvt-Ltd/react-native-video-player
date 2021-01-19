@@ -432,7 +432,7 @@ export default class VideoPlayer extends Component {
     const { customStyles } = this.props;
     return (
       <View style={[styles.controls, customStyles.controls]}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={this.onPlayPress}
           style={[customStyles.controlButton, customStyles.playControl]}
         >
@@ -441,7 +441,7 @@ export default class VideoPlayer extends Component {
             name={this.state.isPlaying ? 'pause' : 'play-arrow'}
             size={32}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {this.renderSeekBar()}
         {this.props.muted ? null : (
           <TouchableOpacity onPress={this.onMutePress} style={customStyles.controlButton}>
@@ -486,9 +486,9 @@ export default class VideoPlayer extends Component {
             customStyles.video,
           ]}
           ref={p => { this.player = p; }}
-          muted={this.props.muted || this.state.isMuted}
+          muted={this.state.isMuted}
           paused={this.props.paused
-            ? this.props.paused || !this.state.isPlaying
+            ? (this.props.paused || !this.state.isPlaying)
             : !this.state.isPlaying}
           onProgress={this.onProgress}
           onEnd={this.onEnd}
@@ -513,7 +513,22 @@ export default class VideoPlayer extends Component {
               if (fullScreenOnLongPress && Platform.OS !== 'android')
                 this.onToggleFullScreen();
             }}
-          />
+          >
+            {((!this.state.isPlaying) || this.state.isControlsVisible) &&
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
+              <TouchableOpacity
+                onPress={this.onPlayPress}
+                style={{backgroundColor: 'rgba(0, 0, 0, 0.6)'}}
+              >
+                <Icon
+                  style={[styles.playControl, customStyles.controlIcon, customStyles.playIcon]}
+                  name={this.state.isPlaying ? 'pause' : 'play-arrow'}
+                  size={32}
+                />
+              </TouchableOpacity>
+            </View>
+            }
+          </TouchableOpacity>
         </View>
         {((!this.state.isPlaying) || this.state.isControlsVisible)
           ? this.renderControls() : this.renderSeekBar(true)}
